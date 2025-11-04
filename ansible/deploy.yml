@@ -1,0 +1,27 @@
+- name: Deploy BankPro Core container
+  hosts: all
+  become: true
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Ensure Docker running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull latest image
+      command: docker pull {{ app_image }}
+
+    - name: Stop existing container (ignore if absent)
+      command: docker rm -f bankpro-core
+      ignore_errors: true
+
+    - name: Run container
+      command: >
+        docker run -d --name bankpro-core -p {{ app_port }}:8080
+        --restart unless-stopped {{ app_image }}
