@@ -8,12 +8,12 @@ pipeline {
     stage('Checkout') {
       steps { git branch: 'main', url: 'https://github.com/himanshujoshi50/bankpro-core.git' }
     }
-    stage('Build & Test') {
-      steps {
-        sh 'which mvn || sudo apt-get update && sudo apt-get install -y maven'
-        sh 'mvn -B -DskipTests=false clean package'
-      }
-    }
+  stage('Build & Test') {
+  steps {
+    sh 'mvn -B -DskipTests=false clean package'
+  }
+}
+
     stage('Docker Build') {
       steps { sh 'docker build -t $IMAGE .' }
     }
